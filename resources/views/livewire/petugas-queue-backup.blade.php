@@ -8,98 +8,47 @@
             setTimeout(() => this.showNotification = false, duration);
         }
     }"
-    class="space-y-6"
+    class="grid grid-cols-1 lg:grid-cols-3 gap-8"
 >
     <!-- Notification -->
     <div 
         x-show="showNotification" 
         x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0 transform translate-y-2"
+        x-transition:enter-start="opacity-0 transform -translate-y-2"
         x-transition:enter-end="opacity-100 transform translate-y-0"
         x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0 transform translate-y-2"
-        class="fixed bottom-6 right-6 z-50 max-w-sm w-full bg-white shadow-2xl rounded-xl pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
+        x-transition:leave-start="opacity-100 transform translate-y-0"
+        x-transition:leave-end="opacity-0 transform -translate-y-2"
+        class="fixed top-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 shadow-lg rounded-r-lg z-50"
+        role="alert"
     >
-        <div class="p-4">
-            <div class="flex items-start">
-                <div class="flex-shrink-0">
-                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                        <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        <p class="font-medium" x-text="notificationMessage"></p>
+    </div>
+
+    <!-- Left column: selector + waiting list -->
+    <div class="lg:col-span-1 space-y-6">
+        <!-- Header Section with real-time updates -->
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center">
+                    <div class="relative">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                     </div>
+                    <h2 class="ml-2 text-xl font-bold text-gray-800">Antrian Aktif</h2>
                 </div>
-                <div class="ml-3 w-0 flex-1">
-                    <p class="text-sm font-semibold text-gray-900">Berhasil!</p>
-                    <p x-text="notificationMessage" class="mt-1 text-sm text-gray-600"></p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <div class="text-sm bg-gray-100 px-3 py-1 rounded-full" wire:poll.1s>
+                    <span class="font-medium text-gray-800">{{ now()->format('H:i') }}</span>
+                    <span class="text-gray-500">{{ now()->format(':s') }}</span>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Stats Cards Row -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4" wire:poll.3s>
-        <div class="rounded-xl shadow-lg p-5 text-white" style="background: linear-gradient(to bottom right, #3b82f6, #2563eb);">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-blue-100 text-sm font-medium mb-1">Total Antrian</p>
-                    <p class="text-3xl font-bold">{{ isset($waitingList) ? $waitingList->count() : 0 }}</p>
-                </div>
-                <div class="w-14 h-14 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-        <div class="rounded-xl shadow-lg p-5 text-white" style="background: linear-gradient(to bottom right, #22c55e, #059669);">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-green-100 text-sm font-medium mb-1">Sedang Dilayani</p>
-                    <p class="text-3xl font-bold">{{ $currentCalled ? 1 : 0 }}</p>
-                </div>
-                <div class="w-14 h-14 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-        <div class="rounded-xl shadow-lg p-5 text-white" style="background: linear-gradient(to bottom right, #a855f7, #9333ea);">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-purple-100 text-sm font-medium mb-1">Status Loket</p>
-                    <p class="text-xl font-bold">{{ $loketId ? 'Aktif' : 'Tidak Aktif' }}</p>
-                </div>
-                <div class="w-14 h-14 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-        <div class="rounded-xl shadow-lg p-5 text-white" style="background: linear-gradient(to bottom right, #f97316, #ea580c);" wire:poll.1s>
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-orange-100 text-sm font-medium mb-1">Waktu Real-time</p>
-                    <p class="text-2xl font-bold">{{ now()->format('H:i:s') }}</p>
-                </div>
-                <div class="w-14 h-14 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content Grid - 3 Columns Horizontal Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    
-    <!-- Column 1: Loket Selector (1/3) -->
-    <div class="space-y-6">
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
             <div class="p-6">
                 <label class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
                     <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -194,32 +143,25 @@
                 </div>
             @endif
         </div>
-    </div>
 
-    <!-- Column 2: Waiting List (1/3) -->
-    <div class="space-y-6">
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100" wire:poll.3s>
-            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-5">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden" wire:poll.5s>
+            <div class="border-b border-gray-100 bg-white px-6 py-4">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mr-3 backdrop-blur-sm">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold text-white">Antrian Menunggu</h3>
-                            <p class="text-purple-100 text-sm">Daftar pasien</p>
-                        </div>
+                        <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                        </svg>
+                        <h4 class="text-lg font-semibold text-gray-800">Daftar Antrian Menunggu</h4>
                     </div>
                     @if(isset($waitingList) && $waitingList->count() > 0)
-                        <span class="px-3 py-1.5 text-sm font-bold text-purple-600 bg-white rounded-lg shadow-sm">
-                            {{ $waitingList->count() }}
+                        <span class="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-full">
+                            {{ $waitingList->count() }} Antrian
                         </span>
                     @endif
                 </div>
             </div>
-            <div class="p-6 max-h-96 overflow-y-auto">
+
+            <div class="p-6">
                 @if(!$loketId)
                     <div class="flex items-center justify-center p-6 text-center">
                         <div class="text-center">
@@ -271,11 +213,23 @@
                 @endif
             </div>
 
+            <div wire:loading wire:target="waitingList" class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
+                <div class="flex items-center space-x-2 text-blue-600">
+                    <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="text-sm font-medium">Memperbarui data...</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Column 3: Current Called (1/3) -->
-    <div class="space-y-6">
+    <!-- Center spacer for balanced layout on large screens -->
+    <div class="lg:col-span-1"></div>
+
+    <!-- Right column: current called -->
+    <div class="lg:col-span-1">
         <div class="bg-white rounded-lg shadow-lg p-8 border border-gray-100 transition-all duration-300 hover:shadow-xl text-center">
             <h4 class="text-lg font-semibold text-gray-700 mb-6 flex items-center justify-center">
                 <svg class="w-6 h-6 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -314,7 +268,5 @@
                 </span>
             </button>
         </div>
-    </div>
-    </div>
     </div>
 </div>

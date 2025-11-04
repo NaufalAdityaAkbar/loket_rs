@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('lokets', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('type')->nullable(); // contoh: Umum, Poli Gigi, Farmasi
+            $table->string('name'); // contoh: Umum, Poli Gigi, Farmasi
+            $table->string('type')->nullable(); // contoh: A, B, C (prefix untuk nomor antrian)
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

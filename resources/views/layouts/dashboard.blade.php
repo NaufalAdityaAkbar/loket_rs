@@ -17,13 +17,28 @@
     .admin-gradient {
         background: linear-gradient(135deg, #1e4b9c 0%, #2563eb 100%);
     }
+
+    /* Ensure gradient backgrounds work */
+    .bg-gradient-to-br {
+        background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+    }
+    
+    /* Stats card colors fallback */
+    .from-blue-500 { --tw-gradient-from: #3b82f6; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(59, 130, 246, 0)); }
+    .to-blue-600 { --tw-gradient-to: #2563eb; }
+    .from-green-500 { --tw-gradient-from: #22c55e; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(34, 197, 94, 0)); }
+    .to-emerald-600 { --tw-gradient-to: #059669; }
+    .from-purple-500 { --tw-gradient-from: #a855f7; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(168, 85, 247, 0)); }
+    .to-purple-600 { --tw-gradient-to: #9333ea; }
+    .from-orange-500 { --tw-gradient-from: #f97316; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(249, 115, 22, 0)); }
+    .to-orange-600 { --tw-gradient-to: #ea580c; }
     </style>
 </head>
 
 <body class="min-h-screen bg-gray-50 font-sans">
     <div class="flex">
         <!-- Sidebar -->
-        <aside class="w-64 admin-gradient text-white min-h-screen shadow-xl">
+        <aside class="w-64 admin-gradient text-white min-h-screen shadow-xl fixed left-0 top-0 bottom-0 overflow-y-auto z-40">
             <div class="px-6 py-5 flex items-center gap-3 border-b border-white/10 bg-black/10">
                 <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center font-bold text-blue-700">RS
                 </div>
@@ -99,9 +114,9 @@
         </aside>
 
         <!-- Content -->
-        <main class="flex-1 bg-gray-50">
-            <div class="py-6 px-8">
-                <div class="max-w-6xl mx-auto">
+        <main class="flex-1 bg-gray-50 ml-64">
+            <div class="py-8 px-6 lg:px-10">
+                <div class="max-w-7xl mx-auto">
                     @yield('content')
                 </div>
             </div>

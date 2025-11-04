@@ -10,6 +10,8 @@ class Loket extends Model
     use HasFactory;
 
     // Allowed mass assignment fields
+    // name: nama loket (e.g. Umum, Poli Gigi, Farmasi)
+    // type: tipe/kode loket untuk prefix nomor antrian (e.g. A, B, C)
     protected $fillable = [
         'name',
         'type',

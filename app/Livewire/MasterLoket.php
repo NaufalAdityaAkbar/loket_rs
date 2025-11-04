@@ -30,8 +30,8 @@ class MasterLoket extends Component
         $this->validate();
 
         Loket::create([
-            'name' => $this->type, // menukar name dan type sesuai permintaan
-            'type' => $this->name,
+            'name' => $this->name,
+            'type' => $this->type,
         ]);
 
         $this->name = '';
@@ -64,8 +64,8 @@ class MasterLoket extends Component
         $loket = Loket::find($this->editingLoketId);
         if ($loket) {
             $loket->update([
-                'name' => $this->type,
-                'type' => $this->name
+                'name' => $this->name,
+                'type' => $this->type
             ]);
 
             $this->resetForm();

@@ -34,34 +34,26 @@ class Antrian extends Model
     /**
      * Generate and create antrian for a given loket.
      * Format: {PREFIX}{NNN} e.g. A001
-     * Prefix is derived from loket name first letter (fallback 'U').
+     * Prefix is derived from loket type (fallback 'U').
      * NOTE: This is a simple implementation and may have race conditions under high concurrency.
      */
     public static function generateForLoket(?int $loketId = null, ?string $patientName = null): self
     {
-        // Determine prefix
+        // Determine prefix from loket type
         $prefix = 'U';
         if ($loketId) {
             $loket = Loket::find($loketId);
-            if ($loket && !empty($loket->name)) {
-                // take first alpha character of name
-                $onlyLetters = preg_replace('/[^A-Za-z]/', '', $loket->name);
-                $prefix = strtoupper(substr($onlyLetters ?: $loket->id, 0, 1));
+            if ($loket && !empty($loket->type)) {
+                // take first alpha character of type
+                $onlyLetters = preg_replace('/[^A-Za-z]/', '', $loket->type);
+                $prefix = strtoupper(substr($onlyLetters, 0, 1));
             }
         }
 
-        // Find last nomor for this loket (prefer checking loket_id); fallback to any nomor with same prefix
-        $last = self::where('loket_id', $loketId)
-            ->where('nomor', 'like', $prefix . '%')
+        // Find last nomor with same prefix (across all lokets with same type)
+        $last = self::where('nomor', 'like', $prefix . '%')
             ->orderBy('id', 'desc')
             ->first();
-
-        if (! $last) {
-            // try any with same prefix
-            $last = self::where('nomor', 'like', $prefix . '%')
-                ->orderBy('id', 'desc')
-                ->first();
-        }
 
     $nextNum = 1;
         if ($last && preg_match('/(\d+)$/', $last->nomor, $m)) {

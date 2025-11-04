@@ -9,7 +9,7 @@ class LoketSeeder extends Seeder
 {
     public function run(): void
     {
-        // use short names (A/B/C) so generated nomor prefix uses the letter directly
+        // name = nama loket, type = kode prefix untuk nomor antrian
         $lokets = [
             ['name' => 'Umum', 'type' => 'A'],
             ['name' => 'Poli Gigi', 'type' => 'B'],
