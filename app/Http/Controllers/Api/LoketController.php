@@ -8,21 +8,38 @@ use Illuminate\Http\Request;
 
 class LoketController extends Controller
 {
-    // Return list of loket
-    public function index()
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
     {
-        // Simple listing - later dapat ditambah paging, filter, permission
-        return response()->json(Loket::all());
+        $query = Loket::query();
+
+        // Search by name or type
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('type', 'like', "%{$search}%");
+            });
+        }
+
+        // Pagination
+        $perPage = $request->input('per_page', 10);
+        $lokets = $query->orderBy('id', 'desc')->paginate($perPage);
+
+        return response()->json($lokets);
     }
 
-    // Store a new loket
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        // Validasi input minimal sebelum simpan
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'nullable|string|max:100',
-            'description' => 'nullable|string',
+            'name' => 'required|string|max:50',
+            'type' => 'required|string|max:10|unique:lokets,type',
+            'description' => 'nullable|string|max:255',
         ]);
 
         $loket = Loket::create($data);
@@ -30,19 +47,23 @@ class LoketController extends Controller
         return response()->json($loket, 201);
     }
 
-    // Show single loket
+    /**
+     * Display the specified resource.
+     */
     public function show(Loket $loket)
     {
         return response()->json($loket);
     }
 
-    // Update loket
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, Loket $loket)
     {
         $data = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'type' => 'nullable|string|max:100',
-            'description' => 'nullable|string',
+            'name' => 'sometimes|required|string|max:50',
+            'type' => 'sometimes|required|string|max:10|unique:lokets,type,' . $loket->id,
+            'description' => 'nullable|string|max:255',
         ]);
 
         $loket->update($data);
@@ -50,12 +71,13 @@ class LoketController extends Controller
         return response()->json($loket);
     }
 
-    // Hapus loket
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(Loket $loket)
     {
-        // Hapus sederhana; jika ingin soft delete, ubah model dan migrasi
         $loket->delete();
 
-        return response()->json(['message' => 'Loket deleted']);
+        return response()->json(['message' => 'Loket deleted successfully']);
     }
 }

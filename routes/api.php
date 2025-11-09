@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\LoketController;
 use App\Http\Controllers\Api\AntrianController;
 
+// API routes for Loket resource
 Route::apiResource('lokets', LoketController::class);
 
 // Antrian: generate, list, call next, update, delete
